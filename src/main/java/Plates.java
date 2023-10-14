@@ -13,10 +13,18 @@ import java.util.List;
 
 @Data
 public class Plates {
-	private final String fileName = "plates.txt";
-	private final String[] plates = readPlatesFromFile(fileName);
+	private String fileName = "plates.txt";
+	private String[] plates;
 
-//	Given a string representing a serial format and an integer corresponding to the month of vehicle
+	{
+		try {
+			plates = readPlatesFromFile(fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//	Given a string representing a serial format and an integer corresponding to the month of vehicle
 //	expiration, return a randomly generated plate adhering to the serial format.	
 	public static String createRandomPlate(String serial, int month) {
 		char[] characters = serial.toCharArray();
@@ -46,14 +54,14 @@ public class Plates {
 				if (characters[i] == '9') { //if the digit is 9, carry to 0
 					characters[i] = '0';
 				} else {
-					characters[i] = (char) ((int) characters[i] + 1);
+					characters[i] = (char) (characters[i] + 1);
 					break; //if the digit is not 9, increment and break
 				}
 			} else if (Character.isLetter(characters[i])) {
 				if (characters[i] == 'Z') {
 					characters[i] = 'A'; //if the letter is Z, carry to A
 				} else {
-					characters[i] = (char) ((int) characters[i] + 1);
+					characters[i] = (char) (characters[i] + 1);
 					break; //if the letter is not Z, increment and break
 				}
 			}
@@ -100,7 +108,6 @@ public class Plates {
 				break;
 			}
 		}
-		// TODO: 10/1/23 check if there is a letter after the first digit
 		if(indexDigit != 0){
 			for (int i = indexDigit; i < characters.length; i++) {
 				if (Character.isLetter(characters[i])) {
@@ -172,24 +179,28 @@ public class Plates {
 	}
 
 //	Utility method for reading from plates.txt
-	public static String[] readPlatesFromFile(String fileName) {
-		String currentDirectory = System.getProperty("user.dir");
-		String filePath = currentDirectory + "/src/main/resources/" + fileName;
-		List<String> plates = new ArrayList<>();
-		try {
-			FileReader reader = new FileReader(filePath);
-			BufferedReader br = new BufferedReader(reader);
+	public static String[] readPlatesFromFile(String fileName) throws IOException {
+        String currentDirectory = System.getProperty("user.dir");
+        String filePath = currentDirectory + "/src/main/resources/" + fileName;
+        List<String> plates = new ArrayList<>();
+        BufferedReader br = null;
+        try {
+            FileReader reader = new FileReader(filePath);
+            br = new BufferedReader(reader);
 
-			String line;
+            String line;
             while ((line = br.readLine()) != null) {
-            	plates.add(line);
+                plates.add(line);
             }
             reader.close();
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+			if (br != null) {
+				br.close();
+			}
 		}
-		return plates.toArray(new String[0]);
-	}
+        return plates.toArray(new String[0]);
+    }
 
 }
