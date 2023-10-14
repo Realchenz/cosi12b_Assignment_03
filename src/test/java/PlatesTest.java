@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.Test;
 import java.lang.reflect.Field;
 
@@ -12,7 +13,7 @@ public class PlatesTest {
 
     @Test
     public void testNextPlate() {
-        String plate = "999ZZ9";
+        String plate = "123AB9";
         String nextPlate = Plates.nextPlate(plate);
         System.out.println(nextPlate);
     }
@@ -22,6 +23,7 @@ public class PlatesTest {
         String plate = "12SD46";
         String serial = Plates.getSerial(plate);
         System.out.println(serial);
+        Assert.assertEquals("12AB34",serial);
     }
 
     @Test
